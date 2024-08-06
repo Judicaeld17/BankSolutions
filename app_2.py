@@ -32,17 +32,20 @@ if uploaded_file is not None:
                      'Online', 'CreditCard']]
 
     # Make predictions for each row in the DataFrame
-    predictions = model.predict(features)
+    prediction_probs = model.predict_proba(features)
+
+    # Extract the probability of the positive class (Class 1)
+    prediction_scores = prediction_probs[:, 1]
 
     # Map predictions to "Non approuvé" and "Approuvé"
-    prediction_labels = ["Non approuvé" if pred == 0 else "Approuvé" for pred in predictions]
+    prediction_labels = ["Non approuvé" if score < 0.5 else "Approuvé" for score in prediction_scores]
 
     # Create the output DataFrame
     output_data = pd.DataFrame({
         'ID': data.index,  # Assuming the ID is the index or you have an 'ID' column
         'Age': data['Age'],
         'Experience': data['Experience'],
-        'Prediction Score': predictions,
+        'Prediction Score': prediction_scores,
         'Prediction': prediction_labels
     })
 
