@@ -12,11 +12,17 @@ st.markdown(
     .title {
         text-align: center;
     }
+    .total-row {
+        text-align: center;
+        font-size: 20px;  /* Increase font size for visibility */
+        font-weight: bold;
+    }
     </style>
     <h1 class="title">Prédicteur d'Acceptation d'Offre de Prêt</h1>
     """,
     unsafe_allow_html=True
 )
+
 # Create two columns with equal width
 col1, col2 = st.columns(2)
 
@@ -74,9 +80,18 @@ if uploaded_file is not None:
         count_approuve = output_data['Prédiction'].str.contains("✅").sum()
         count_non_approuve = output_data['Prédiction'].str.contains("❌").sum()
 
-        # Display the counts
-        st.write(f"Total '✅ Approuvé': {count_approuve}")
-        st.write(f"Total '❌ Non approuvé': {count_non_approuve}")
+        # Create a DataFrame to display the totals
+        totals = pd.DataFrame({
+            'Prédiction': [
+                f"✅ Approuvé: {count_approuve}",
+                f"❌ Non approuvé: {count_non_approuve}"
+            ]
+        })
+
+        # Display the totals in a row at the bottom of the columns
+        st.markdown('<div class="total-row">', unsafe_allow_html=True)
+        st.write(totals, use_container_width=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
 else:
     with col2:
