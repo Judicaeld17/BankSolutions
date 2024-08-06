@@ -6,14 +6,14 @@ import pandas as pd
 model = joblib.load('model.pkl')
 
 # Title of the app
-st.title("Loan Offer Acceptance Predictor")
+st.title("Prédicteur d'Acceptation d'Offre de Prêt")
 
 # Create two columns with equal width
 col1, col2 = st.columns(2)
 
 with col1:
     # File uploader for CSV
-    uploaded_file = st.file_uploader("Upload CSV file for predictions", type=["csv"])
+    uploaded_file = st.file_uploader("Téléchargez un fichier CSV pour les prédictions", type=["csv"])
 
 with col2:
     # Placeholder for content to be updated
@@ -45,25 +45,25 @@ if uploaded_file is not None:
 
     # Create the DataFrame with prediction scores
     output_data = pd.DataFrame({
-        'Age': data['Age'],
-        'Experience': data['Experience'],
-        'Prediction Score': formatted_scores
+        'Âge': data['Age'],
+        'Expérience': data['Experience'],
+        'Score de Prédiction': formatted_scores
     })
 
     with col2:
         # Slider to set the threshold
-        threshold = st.slider("Set the threshold for decision-making", min_value=0.0, max_value=1.0, value=0.5, step=0.01)
+        threshold = st.slider("Définissez le seuil pour la prise de décision", min_value=0.0, max_value=1.0, value=0.5, step=0.01)
 
         # Update the DataFrame with predictions based on the selected threshold
-        output_data['Prediction'] = ["❌ Non approuvé" if float(score) < threshold else "✅ Approuvé" for score in formatted_scores]
+        output_data['Prédiction'] = ["❌ Non approuvé" if float(score) < threshold else "✅ Approuvé" for score in formatted_scores]
 
         # Display the updated predictions
-        st.write("Updated Predictions with Threshold:")
+        st.write("Prédictions mises à jour avec le seuil :")
         st.write(output_data)
 
         # Count the number of "Approuvé" and "Non approuvé"
-        count_approuve = output_data['Prediction'].str.contains("✅").sum()
-        count_non_approuve = output_data['Prediction'].str.contains("❌").sum()
+        count_approuve = output_data['Prédiction'].str.contains("✅").sum()
+        count_non_approuve = output_data['Prédiction'].str.contains("❌").sum()
 
         # Display the counts
         st.write(f"Total '✅ Approuvé': {count_approuve}")
@@ -72,4 +72,4 @@ if uploaded_file is not None:
 else:
     with col2:
         # Show a message if no file has been uploaded
-        st.write("Please upload a CSV file to start the predictions.")
+        st.write("Veuillez télécharger un fichier CSV pour commencer les prédictions.")
