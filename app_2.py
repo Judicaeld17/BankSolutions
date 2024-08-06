@@ -21,14 +21,14 @@ if uploaded_file is not None:
     st.write(data)
 
     # Preprocess the data
-    data['Securities_Account'] = data['Securities_Account'].apply(lambda x: 1 if x == "Yes" else 0)
+    data['Securities Account'] = data['Securities Account'].apply(lambda x: 1 if x == "Yes" else 0)
     data['CD_Account'] = data['CD_Account'].apply(lambda x: 1 if x == "Yes" else 0)
     data['Online'] = data['Online'].apply(lambda x: 1 if x == "Yes" else 0)
     data['CreditCard'] = data['CreditCard'].apply(lambda x: 1 if x == "Yes" else 0)
 
     # Extract the features from the DataFrame
     features = data[['Age', 'Experience', 'Income', 'ZIP_Code', 'Family', 'CCAvg',
-                     'Education', 'Mortgage', 'Securities_Account', 'CD_Account', 
+                     'Education', 'Mortgage', 'Securities Account', 'CD Account', 
                      'Online', 'CreditCard']]
 
     # Make predictions for each row in the DataFrame
@@ -38,5 +38,5 @@ if uploaded_file is not None:
     data['Prediction'] = predictions
     st.write("Predictions:")
     st.write(data[['Age', 'Experience', 'Income', 'ZIP_Code', 'Family', 'CCAvg',
-                   'Education', 'Mortgage', 'Securities_Account', 'CD_Account',
+                   'Education', 'Mortgage', 'Securities Account', 'CD Account',
                    'Online', 'CreditCard', 'Prediction']])
