@@ -8,11 +8,16 @@ model = joblib.load('model.pkl')
 # Title of the app
 st.title("Loan Offer Acceptance Predictor")
 
-# File uploader for CSV
-uploaded_file = st.file_uploader("Upload CSV file for predictions", type=["csv"])
+# Create columns for side-by-side content
+col1, col2 = st.columns([1, 2])  # Adjust the ratio as needed
 
-# Create a placeholder for content that will be shown after file upload
-placeholder = st.empty()
+with col1:
+    # File uploader for CSV
+    uploaded_file = st.file_uploader("Upload CSV file for predictions", type=["csv"])
+
+with col2:
+    # Placeholder for content to be updated
+    placeholder = st.empty()
 
 if uploaded_file is not None:
     # Read the uploaded file into a DataFrame
@@ -43,8 +48,7 @@ if uploaded_file is not None:
         'Prediction Score': prediction_scores
     })
 
-    # Placeholder for content to be updated
-    with placeholder.container():
+    with col2:
         # Display the uploaded data
         st.write("Uploaded Data:")
         st.write(data)
@@ -67,6 +71,7 @@ if uploaded_file is not None:
         st.write(f"Total 'Approuvé': {count_approuve}")
         st.write(f"Total 'Non approuvé': {count_non_approuve}")
 
-# Show a message if no file has been uploaded
-if uploaded_file is None:
-    st.write("Please upload a CSV file to start the predictions.")
+else:
+    with col2:
+        # Show a message if no file has been uploaded
+        st.write("Please upload a CSV file to start the predictions.")
