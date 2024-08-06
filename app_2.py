@@ -2,9 +2,16 @@ import streamlit as st
 import joblib
 import numpy as np
 import pandas as pd
+import sklearn
+
+# Print scikit-learn version for debugging
+st.write(f"scikit-learn version: {sklearn.__version__}")
 
 # Load the model
-model = joblib.load('model.pkl')
+try:
+    model = joblib.load('model.pkl')
+except Exception as e:
+    st.error(f"Failed to load model: {e}")
 
 # Title of the app
 st.title("Loan Offer Acceptance Predictor")
