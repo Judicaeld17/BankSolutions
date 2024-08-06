@@ -52,22 +52,18 @@ if uploaded_file is not None:
     })
 
     with col2:
-        # Display the uploaded data
-        st.write("Uploaded Data:")
-        st.write(data)
-
         # Slider to set the threshold
         threshold = st.slider("Set the threshold for decision-making", min_value=0.0, max_value=1.0, value=0.5, step=0.01)
 
         # Update the DataFrame with predictions based on the selected threshold
         output_data['Prediction'] = ["❌ Non approuvé" if float(score) < threshold else "✅ Approuvé" for score in formatted_scores]
 
-        # Remove the first column if it's not needed
-        output_data = output_data.loc[:, output_data.columns != 'ID']
+        # Drop the index column if it's showing
+        output_data = output_data.reset_index(drop=True)
 
-        # Display the updated predictions
+        # Display only selected columns
         st.write("Updated Predictions with Threshold:")
-        st.write(output_data)
+        st.write(output_data[['ID', 'Age', 'Experience', 'Prediction Score']])
 
         # Count the number of "Approuvé" and "Non approuvé"
         count_approuve = output_data['Prediction'].str.contains("✅").sum()
