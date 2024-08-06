@@ -5,8 +5,18 @@ import pandas as pd
 # Load the model
 model = joblib.load('model.pkl')
 
-# Title of the app
-st.title("Prédicteur d'Acceptation d'Offre de Prêt")
+# Center the main title
+st.markdown(
+    """
+    <style>
+    .title {
+        text-align: center;
+    }
+    </style>
+    <h1 class="title">Prédicteur d'Acceptation d'Offre de Prêt</h1>
+    """,
+    unsafe_allow_html=True
+)
 
 # Create two columns with equal width
 col1, col2 = st.columns(2)
@@ -54,22 +64,4 @@ if uploaded_file is not None:
         # Slider to set the threshold
         threshold = st.slider("Définissez le seuil pour la prise de décision", min_value=0.0, max_value=1.0, value=0.5, step=0.01)
 
-        # Update the DataFrame with predictions based on the selected threshold
-        output_data['Prédiction'] = ["❌ Non approuvé" if float(score) < threshold else "✅ Approuvé" for score in formatted_scores]
-
-        # Display the updated predictions
-        st.write("Prédictions mises à jour avec le seuil :")
-        st.write(output_data)
-
-        # Count the number of "Approuvé" and "Non approuvé"
-        count_approuve = output_data['Prédiction'].str.contains("✅").sum()
-        count_non_approuve = output_data['Prédiction'].str.contains("❌").sum()
-
-        # Display the counts
-        st.write(f"Total '✅ Approuvé': {count_approuve}")
-        st.write(f"Total '❌ Non approuvé': {count_non_approuve}")
-
-else:
-    with col2:
-        # Show a message if no file has been uploaded
-        st.write("Veuillez télécharger un fichier CSV pour commencer les prédictions.")
+        # Update 
