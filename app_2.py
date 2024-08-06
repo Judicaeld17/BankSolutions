@@ -1,6 +1,5 @@
 import streamlit as st
 import joblib
-import numpy as np
 import pandas as pd
 
 # Load the model
@@ -11,6 +10,9 @@ st.title("Loan Offer Acceptance Predictor")
 
 # File uploader for CSV
 uploaded_file = st.file_uploader("Upload CSV file for predictions", type=["csv"])
+
+# Create a placeholder for content that will be shown after file upload
+placeholder = st.empty()
 
 if uploaded_file is not None:
     # Read the uploaded file into a DataFrame
@@ -41,20 +43,30 @@ if uploaded_file is not None:
         'Prediction Score': prediction_scores
     })
 
-    # Slider to set the threshold
-    threshold = st.slider("Set the threshold for decision-making", min_value=0.0, max_value=1.0, value=0.5, step=0.01)
+    # Placeholder for content to be updated
+    with placeholder.container():
+        # Display the uploaded data
+        st.write("Uploaded Data:")
+        st.write(data)
 
-    # Update the DataFrame with predictions based on the selected threshold
-    output_data['Prediction'] = ["Non approuvé" if score < threshold else "Approuvé" for score in prediction_scores]
+        # Slider to set the threshold
+        threshold = st.slider("Set the threshold for decision-making", min_value=0.0, max_value=1.0, value=0.5, step=0.01)
 
-    # Display the updated predictions
-    st.write("Updated Predictions with Threshold:")
-    st.write(output_data)
+        # Update the DataFrame with predictions based on the selected threshold
+        output_data['Prediction'] = ["Non approuvé" if score < threshold else "Approuvé" for score in prediction_scores]
 
-    # Count the number of "Approuvé" and "Non approuvé"
-    count_approuve = output_data['Prediction'].value_counts().get("Approuvé", 0)
-    count_non_approuve = output_data['Prediction'].value_counts().get("Non approuvé", 0)
+        # Display the updated predictions
+        st.write("Updated Predictions with Threshold:")
+        st.write(output_data)
 
-    # Display the counts
-    st.write(f"Total 'Approuvé': {count_approuve}")
-    st.write(f"Total 'Non approuvé': {count_non_approuve}")
+        # Count the number of "Approuvé" and "Non approuvé"
+        count_approuve = output_data['Prediction'].value_counts().get("Approuvé", 0)
+        count_non_approuve = output_data['Prediction'].value_counts().get("Non approuvé", 0)
+
+        # Display the counts
+        st.write(f"Total 'Approuvé': {count_approuve}")
+        st.write(f"Total 'Non approuvé': {count_non_approuve}")
+
+# Show a message if no file has been uploaded
+if uploaded_file is None:
+    st.write("Please upload a CSV file to start the predictions.")
