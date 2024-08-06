@@ -2,5 +2,5 @@
     streamlit
     joblib
     numpy
-    sklearn==1.3.0
+    scikit-learn==1.3.0
     
