@@ -2,16 +2,9 @@ import streamlit as st
 import joblib
 import numpy as np
 import pandas as pd
-import sklearn
-
-# Print scikit-learn version for debugging
-st.write(f"scikit-learn version: {sklearn.__version__}")
 
 # Load the model
-try:
-    model = joblib.load('model.pkl')
-except Exception as e:
-    st.error(f"Failed to load model: {e}")
+model = joblib.load('model.pkl')
 
 # Title of the app
 st.title("Loan Offer Acceptance Predictor")
@@ -28,31 +21,39 @@ if uploaded_file is not None:
     st.write(data)
 
     # Preprocess the data
-    try:
-        data['Securities Account'] = data['Securities Account'].apply(lambda x: 1 if x == "Yes" else 0)
-        data['CD Account'] = data['CD Account'].apply(lambda x: 1 if x == "Yes" else 0)
-        data['Online'] = data['Online'].apply(lambda x: 1 if x == "Yes" else 0)
-        data['CreditCard'] = data['CreditCard'].apply(lambda x: 1 if x == "Yes" else 0)
+    data['Securities Account'] = data['Securities Account'].apply(lambda x: 1 if x == "Yes" else 0)
+    data['CD Account'] = data['CD Account'].apply(lambda x: 1 if x == "Yes" else 0)
+    data['Online'] = data['Online'].apply(lambda x: 1 if x == "Yes" else 0)
+    data['CreditCard'] = data['CreditCard'].apply(lambda x: 1 if x == "Yes" else 0)
 
-        # Extract the features from the DataFrame
-        features = data[['Age', 'Experience', 'Income', 'ZIP Code', 'Family', 'CCAvg',
-                         'Education', 'Mortgage', 'Securities Account', 'CD Account', 
-                         'Online', 'CreditCard']]
+    # Extract the features from the DataFrame
+    features = data[['Age', 'Experience', 'Income', 'ZIP Code', 'Family', 'CCAvg',
+                     'Education', 'Mortgage', 'Securities Account', 'CD Account', 
+                     'Online', 'CreditCard']]
 
-        # Check for missing values
-        if features.isnull().values.any():
-            st.error("Some required fields are missing in the uploaded data. Please check the file.")
-        else:
-            # Make predictions for each row in the DataFrame
-            predictions = model.predict(features)
+    # Make predictions for each row in the DataFrame
+    predictions = model.predict(features)
 
-            # Display the predictions
-            data['Prediction'] = predictions
-            st.write("Predictions:")
-            st.write(data[['Age', 'Experience', 'Income', 'ZIP Code', 'Family', 'CCAvg',
-                           'Education', 'Mortgage', 'Securities Account', 'CD Account',
-                           'Online', 'CreditCard', 'Prediction']])
-    except KeyError as e:
-        st.error(f"Missing column in the uploaded data: {e}")
-    except Exception as e:
-        st.error(f"An error occurred: {e}")
+    # Map predictions to "Non approuvé" and "Approuvé"
+    prediction_labels = ["Non approuvé" if pred == 0 else "Approuvé" for pred in predictions]
+
+    # Create the output DataFrame
+    output_data = pd.DataFrame({
+        'ID': data.index,  # Assuming the ID is the index or you have an 'ID' column
+        'Age': data['Age'],
+        'Experience': data['Experience'],
+        'Prediction Score': predictions,
+        'Prediction': prediction_labels
+    })
+
+    # Display the predictions
+    st.write("Predictions:")
+    st.write(output_data)
+
+    # Count the number of "Approuvé" and "Non approuvé"
+    count_approuve = prediction_labels.count("Approuvé")
+    count_non_approuve = prediction_labels.count("Non approuvé")
+
+    # Display the counts
+    st.write(f"Total 'Approuvé': {count_approuve}")
+    st.write(f"Total 'Non approuvé': {count_non_approuve}")
