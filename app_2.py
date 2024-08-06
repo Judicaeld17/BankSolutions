@@ -58,12 +58,9 @@ if uploaded_file is not None:
         # Update the DataFrame with predictions based on the selected threshold
         output_data['Prediction'] = ["❌ Non approuvé" if float(score) < threshold else "✅ Approuvé" for score in formatted_scores]
 
-        # Drop the index column if it's showing
-        output_data = output_data.reset_index(drop=True)
-
-        # Display only selected columns
+        # Display the updated predictions
         st.write("Updated Predictions with Threshold:")
-        st.write(output_data[['ID', 'Age', 'Experience', 'Prediction Score']])
+        st.write(output_data)
 
         # Count the number of "Approuvé" and "Non approuvé"
         count_approuve = output_data['Prediction'].str.contains("✅").sum()
