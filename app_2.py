@@ -21,22 +21,31 @@ if uploaded_file is not None:
     st.write(data)
 
     # Preprocess the data
-    data['Securities Account'] = data['Securities Account'].apply(lambda x: 1 if x == "Yes" else 0)
-    data['CD Account'] = data['CD Account'].apply(lambda x: 1 if x == "Yes" else 0)
-    data['Online'] = data['Online'].apply(lambda x: 1 if x == "Yes" else 0)
-    data['CreditCard'] = data['CreditCard'].apply(lambda x: 1 if x == "Yes" else 0)
+    try:
+        data['Securities Account'] = data['Securities Account'].apply(lambda x: 1 if x == "Yes" else 0)
+        data['CD Account'] = data['CD Account'].apply(lambda x: 1 if x == "Yes" else 0)
+        data['Online'] = data['Online'].apply(lambda x: 1 if x == "Yes" else 0)
+        data['CreditCard'] = data['CreditCard'].apply(lambda x: 1 if x == "Yes" else 0)
 
-    # Extract the features from the DataFrame
-    features = data[['Age', 'Experience', 'Income', 'ZIP Code', 'Family', 'CCAvg',
-                     'Education', 'Mortgage', 'Securities Account', 'CD Account', 
-                     'Online', 'CreditCard']]
+        # Extract the features from the DataFrame
+        features = data[['Age', 'Experience', 'Income', 'ZIP Code', 'Family', 'CCAvg',
+                         'Education', 'Mortgage', 'Securities Account', 'CD Account', 
+                         'Online', 'CreditCard']]
 
-    # Make predictions for each row in the DataFrame
-    predictions = model.predict(features)
+        # Check for missing values
+        if features.isnull().values.any():
+            st.error("Some required fields are missing in the uploaded data. Please check the file.")
+        else:
+            # Make predictions for each row in the DataFrame
+            predictions = model.predict(features)
 
-    # Display the predictions
-    data['Prediction'] = predictions
-    st.write("Predictions:")
-    st.write(data[['Age', 'Experience', 'Income', 'ZIP Code', 'Family', 'CCAvg',
-                   'Education', 'Mortgage', 'Securities Account', 'CD Account',
-                   'Online', 'CreditCard', 'Prediction']])
+            # Display the predictions
+            data['Prediction'] = predictions
+            st.write("Predictions:")
+            st.write(data[['Age', 'Experience', 'Income', 'ZIP Code', 'Family', 'CCAvg',
+                           'Education', 'Mortgage', 'Securities Account', 'CD Account',
+                           'Online', 'CreditCard', 'Prediction']])
+    except KeyError as e:
+        st.error(f"Missing column in the uploaded data: {e}")
+    except Exception as e:
+        st.error(f"An error occurred: {e}")
