@@ -9,6 +9,9 @@ model = joblib.load('model.pkl')
 # Title of the app
 st.title("Loan Offer Acceptance Predictor")
 
+# Slider to set the threshold
+threshold = st.slider("Set the threshold for decision-making", min_value=0.0, max_value=1.0, value=0.5, step=0.01)
+
 # File uploader for CSV
 uploaded_file = st.file_uploader("Upload CSV file for predictions", type=["csv"])
 
@@ -37,8 +40,8 @@ if uploaded_file is not None:
     # Extract the probability of the positive class (Class 1)
     prediction_scores = prediction_probs[:, 1]
 
-    # Map predictions to "Non approuvé" and "Approuvé"
-    prediction_labels = ["Non approuvé" if score < 0.5 else "Approuvé" for score in prediction_scores]
+    # Map predictions to "Non approuvé" and "Approuvé" based on the threshold
+    prediction_labels = ["Non approuvé" if score < threshold else "Approuvé" for score in prediction_scores]
 
     # Create the output DataFrame
     output_data = pd.DataFrame({
