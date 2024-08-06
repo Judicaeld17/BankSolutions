@@ -51,10 +51,6 @@ if uploaded_file is not None:
     })
 
     with col2:
-        # Display the uploaded data
-        st.write("Uploaded Data:")
-        st.write(data)
-
         # Slider to set the threshold
         threshold = st.slider("Set the threshold for decision-making", min_value=0.0, max_value=1.0, value=0.5, step=0.01)
 
