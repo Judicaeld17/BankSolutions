@@ -8,8 +8,8 @@ model = joblib.load('model.pkl')
 # Title of the app
 st.title("Loan Offer Acceptance Predictor")
 
-# Create columns for side-by-side content
-col1, col2 = st.columns([1, 2])  # Adjust the ratio as needed
+# Create two columns with equal width
+col1, col2 = st.columns(2)
 
 with col1:
     # File uploader for CSV
