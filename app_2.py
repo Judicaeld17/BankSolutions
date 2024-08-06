@@ -9,9 +9,6 @@ model = joblib.load('model.pkl')
 # Title of the app
 st.title("Loan Offer Acceptance Predictor")
 
-# Slider to set the threshold
-threshold = st.slider("Set the threshold for decision-making", min_value=0.0, max_value=1.0, value=0.5, step=0.01)
-
 # File uploader for CSV
 uploaded_file = st.file_uploader("Upload CSV file for predictions", type=["csv"])
 
@@ -40,20 +37,29 @@ if uploaded_file is not None:
     # Extract the probability of the positive class (Class 1)
     prediction_scores = prediction_probs[:, 1]
 
-    # Map predictions to "Non approuvé" and "Approuvé" based on the threshold
-    prediction_labels = ["Non approuvé" if score < threshold else "Approuvé" for score in prediction_scores]
-
-    # Create the output DataFrame
+    # Create the output DataFrame with initial predictions
     output_data = pd.DataFrame({
         'ID': data.index,  # Assuming the ID is the index or you have an 'ID' column
         'Age': data['Age'],
         'Experience': data['Experience'],
-        'Prediction Score': prediction_scores,
-        'Prediction': prediction_labels
+        'Prediction Score': prediction_scores
     })
 
     # Display the predictions
-    st.write("Predictions:")
+    st.write("Initial Predictions:")
+    st.write(output_data)
+
+    # Slider to set the threshold
+    threshold = st.slider("Set the threshold for decision-making", min_value=0.0, max_value=1.0, value=0.5, step=0.01)
+
+    # Map predictions to "Non approuvé" and "Approuvé" based on the threshold
+    prediction_labels = ["Non approuvé" if score < threshold else "Approuvé" for score in prediction_scores]
+
+    # Update the output DataFrame with the new predictions based on the slider threshold
+    output_data['Prediction'] = prediction_labels
+
+    # Display the updated predictions
+    st.write("Updated Predictions with Threshold:")
     st.write(output_data)
 
     # Count the number of "Approuvé" and "Non approuvé"
