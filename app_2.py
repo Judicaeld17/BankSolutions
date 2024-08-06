@@ -16,10 +16,6 @@ if uploaded_file is not None:
     # Read the uploaded file into a DataFrame
     data = pd.read_csv(uploaded_file)
 
-    # Display the uploaded data
-    st.write("Uploaded Data:")
-    st.write(data)
-
     # Preprocess the data
     data['Securities Account'] = data['Securities Account'].apply(lambda x: 1 if x == "Yes" else 0)
     data['CD Account'] = data['CD Account'].apply(lambda x: 1 if x == "Yes" else 0)
@@ -37,7 +33,7 @@ if uploaded_file is not None:
     # Extract the probability of the positive class (Class 1)
     prediction_scores = prediction_probs[:, 1]
 
-    # Create the output DataFrame with initial predictions
+    # Create the DataFrame with prediction scores
     output_data = pd.DataFrame({
         'ID': data.index,  # Assuming the ID is the index or you have an 'ID' column
         'Age': data['Age'],
@@ -45,26 +41,19 @@ if uploaded_file is not None:
         'Prediction Score': prediction_scores
     })
 
-    # Display the predictions
-    st.write("Initial Predictions:")
-    st.write(output_data)
-
     # Slider to set the threshold
     threshold = st.slider("Set the threshold for decision-making", min_value=0.0, max_value=1.0, value=0.5, step=0.01)
 
-    # Map predictions to "Non approuvé" and "Approuvé" based on the threshold
-    prediction_labels = ["Non approuvé" if score < threshold else "Approuvé" for score in prediction_scores]
-
-    # Update the output DataFrame with the new predictions based on the slider threshold
-    output_data['Prediction'] = prediction_labels
+    # Update the DataFrame with predictions based on the selected threshold
+    output_data['Prediction'] = ["Non approuvé" if score < threshold else "Approuvé" for score in prediction_scores]
 
     # Display the updated predictions
     st.write("Updated Predictions with Threshold:")
     st.write(output_data)
 
     # Count the number of "Approuvé" and "Non approuvé"
-    count_approuve = prediction_labels.count("Approuvé")
-    count_non_approuve = prediction_labels.count("Non approuvé")
+    count_approuve = output_data['Prediction'].value_counts().get("Approuvé", 0)
+    count_non_approuve = output_data['Prediction'].value_counts().get("Non approuvé", 0)
 
     # Display the counts
     st.write(f"Total 'Approuvé': {count_approuve}")
