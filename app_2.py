@@ -22,7 +22,7 @@ if uploaded_file is not None:
 
     # Preprocess the data
     data['Securities Account'] = data['Securities Account'].apply(lambda x: 1 if x == "Yes" else 0)
-    data['CD_Account'] = data['CD_Account'].apply(lambda x: 1 if x == "Yes" else 0)
+    data['CD Account'] = data['CD Account'].apply(lambda x: 1 if x == "Yes" else 0)
     data['Online'] = data['Online'].apply(lambda x: 1 if x == "Yes" else 0)
     data['CreditCard'] = data['CreditCard'].apply(lambda x: 1 if x == "Yes" else 0)
 
